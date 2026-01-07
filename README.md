@@ -1,0 +1,2 @@
+# MacroLab
+Controller for macrophotography
