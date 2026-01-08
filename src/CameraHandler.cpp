@@ -139,4 +139,34 @@ std::string CameraHandler::getConfiguration(const std::string& setting)
     return result;
 }
 
+bool CameraHandler::captureImage(const std::string& fileName)
+{
+    CameraFilePath filePath;
+    CameraFile* file;
+    int res;
+
+    res = gp_camera_capture(m_camera, GP_CAPTURE_IMAGE, &filePath, m_context);
+    if (res != GP_OK)
+    {
+        Logger::Log(LogLevel::ERROR, "Capture failed: %d", res);
+        return false;
+    }
+
+    gp_file_new(&file);
+    res = gp_camera_file_get(m_camera, filePath.folder, filePath.name, GP_FILE_TYPE_NORMAL, file, m_context);
+    if (res == GP_OK)
+    {   
+        res = gp_file_save(file, fileName.c_str());
+        if (res == GP_OK)
+        {
+            Logger::Log(LogLevel::INFO, "Successfully saved as %s", fileName);
+        }
+    }
+
+    gp_camera_file_delete(m_camera, filePath.folder, filePath.name, m_context);
+    gp_file_free(file);
+    return res == GP_OK;
+
+}
+
 

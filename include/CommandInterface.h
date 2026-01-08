@@ -17,6 +17,7 @@ private:
 
     void handleGet(std::vector<std::string>& tokens);
     void handleSet(std::vector<std::string>& tokens);
+    void handleCapture(std::vector<std::string>& tokens);
 
 public:
     CommandInterface(CameraHandler& camera) : m_camera(camera), m_running(false) {};

@@ -38,6 +38,12 @@ void CommandInterface::handleSet(std::vector<std::string>& tokens)
     m_camera.setConfiguration(config, value);
 }
 
+void CommandInterface::handleCapture(std::vector<std::string>& tokens)
+{
+    std::string fileName = tokens[1];
+    m_camera.captureImage(fileName);
+}
+
 void CommandInterface::run()
 {
     
@@ -80,6 +86,15 @@ void CommandInterface::run()
                 continue;
             }
             handleSet(tokens);
+        }
+        else if (cmd == "capture")
+        {
+            if (tokens.size() != 2)
+            {
+                Logger::Log(LogLevel::ERROR, "Improper usage of 'capture'. Enter 'help' for proper usage");
+                continue;
+            }
+            handleCapture(tokens);
         }
         else 
         {
