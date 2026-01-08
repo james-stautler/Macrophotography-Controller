@@ -24,5 +24,6 @@ public:
     std::string getCameraMode();
     
     bool setConfiguration(const std::string& setting, const std::string& value);
+    std::string getConfiguration(const std::string& setting);
 };
 

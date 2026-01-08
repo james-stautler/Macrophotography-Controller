@@ -2,6 +2,7 @@
 add_executable(MacroLab
     main.cpp
     CameraHandler.cpp
+    CommandInterface.cpp
 )
 
 target_link_libraries(MacroLab

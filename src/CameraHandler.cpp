@@ -109,4 +109,34 @@ bool CameraHandler::setConfiguration(const std::string& setting, const std::stri
 
 }
 
+std::string CameraHandler::getConfiguration(const std::string& setting)
+{
+    CameraWidget* root_config = nullptr;
+    CameraWidget* child_widget = nullptr;
+    char* val = nullptr;
+    std::string result = "";
+
+    if (gp_camera_get_config(m_camera, &root_config, m_context) != GP_OK)
+    {
+        Logger::Log(LogLevel::ERROR, "Failed to retrieve config tree for %s", setting.c_str());
+        return result;
+    }
+
+    if (gp_widget_get_child_by_name(root_config, setting.c_str(), &child_widget) == GP_OK)
+    {
+        gp_widget_get_value(child_widget, &val);
+        if (val)
+        {
+            result = std::string(val);
+        }
+    }
+    else 
+    {
+        Logger::Log(LogLevel::ERROR, "%s is not a valid configuration option", setting);
+    }
+
+    gp_widget_free(root_config);
+    return result;
+}
+
 

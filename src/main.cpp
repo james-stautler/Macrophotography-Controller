@@ -1,7 +1,6 @@
-#include <iostream>
-#include <opencv4/opencv2/opencv.hpp>
 #include "../include/CameraHandler.h"
 #include "../include/Logger.h"
+#include "../include/CommandInterface.h"
 
 const std::string ISO = "iso";
 const std::string APERTURE = "aperture";
@@ -18,6 +17,9 @@ int main(int argc, char* argv[])
         camera.disconnect();
         return 1;
     }
+
+    CommandInterface cli(camera);
+    cli.run();
 
     camera.disconnect();
     return 0;
