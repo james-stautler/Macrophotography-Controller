@@ -1,5 +1,6 @@
 #include "../include/CameraHandler.h"
 #include "../include/Logger.h"
+#include <gphoto2/gphoto2-widget.h>
 
 CameraHandler::CameraHandler()
 {
@@ -36,17 +37,76 @@ void CameraHandler::disconnect()
     gp_context_unref(m_context);
 }
 
-bool CameraHandler::setAperture(std::string value)
+std::string CameraHandler::getCameraMode()
 {
-    return false;
+    CameraWidget* root_config = nullptr;
+    CameraWidget* child_widget = nullptr;
+    char* current_mode = nullptr;
+
+    gp_camera_get_config(m_camera, &root_config, m_context);
+    if (gp_widget_get_child_by_name(root_config, "autoexposuremode", &child_widget) == GP_OK)
+    {
+        gp_widget_get_value(child_widget, &current_mode);
+        std::string mode(current_mode);
+        gp_widget_free(root_config);
+        return mode;
+    }
+
+    gp_widget_free(root_config);
+    return "Unknown";
 }
 
-bool CameraHandler::setISO(std::string value)
+bool CameraHandler::setConfiguration(const std::string& setting, const std::string& value)
 {
-    return false;
+    CameraWidget* root_config = nullptr;
+    CameraWidget* child_widget = nullptr;
+    bool found = false;
+
+    gp_camera_get_config(m_camera, &root_config, m_context);
+    if (gp_widget_get_child_by_name(root_config, setting.c_str(), &child_widget) == GP_OK)
+    {
+        int count = gp_widget_count_choices(child_widget);
+
+        for (int i = 0; i < count; i++)
+        {
+            const char* choice;
+            gp_widget_get_choice(child_widget, i, &choice);
+
+            if (value == choice)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            Logger::Log(LogLevel::ERROR, "%s not valid for %s on this camera", value, setting);
+            gp_widget_free(root_config);
+            return false;
+        }
+    }
+
+    if (!found)
+    {
+        Logger::Log(LogLevel::ERROR, "%s is not a valid configuration option for the camera", setting);
+        gp_widget_free(root_config);
+        return false;
+    }
+
+    int res = gp_widget_set_value(child_widget, value.c_str());
+    if (res != GP_OK)
+    {
+        Logger::Log(LogLevel::ERROR, "Widget update failed for %s. Error Code: %d", setting, res);
+        gp_widget_free(root_config);
+        return false;
+    }
+    gp_camera_set_config(m_camera, root_config, m_context);
+    Logger::Log(LogLevel::INFO, "Successfully set %s to %s", setting, value);
+
+    gp_widget_free(root_config);
+    return true;
+
 }
 
-bool CameraHandler::setShutterSpeed(std::string value)
-{
-    return false;
-}
+

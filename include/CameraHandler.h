@@ -21,9 +21,8 @@ public:
     int connect();
     void disconnect();
 
-    bool setAperture(std::string value);
-    bool setISO(std::string value);
-    bool setShutterSpeed(std::string value);
-
+    std::string getCameraMode();
+    
+    bool setConfiguration(const std::string& setting, const std::string& value);
 };
 
