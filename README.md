@@ -1,2 +1,2 @@
-# MacroLab
-Controller for macrophotography
+# Macrophotography Controller
+TBA
