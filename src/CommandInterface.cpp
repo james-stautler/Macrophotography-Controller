@@ -89,7 +89,7 @@ void CommandInterface::run()
         }
         else if (cmd == "capture")
         {
-            if (tokens.size() != 2)
+            if (tokens.size() == 2)
             {
                 Logger::Log(LogLevel::ERROR, "Improper usage of 'capture'. Enter 'help' for proper usage");
                 continue;

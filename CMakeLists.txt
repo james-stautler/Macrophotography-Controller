@@ -7,5 +7,6 @@ find_package(OpenCV REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GPHOTO2 REQUIRED libgphoto2)
 
+include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(include)
 add_subdirectory(src)

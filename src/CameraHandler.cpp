@@ -169,4 +169,30 @@ bool CameraHandler::captureImage(const std::string& fileName)
 
 }
 
+cv::Mat CameraHandler::captureImage()
+{
+    CameraFilePath filePath;
+    CameraFile* file;
+    const char* data;
+    unsigned long int size;
+
+    if (gp_camera_capture(m_camera, GP_CAPTURE_IMAGE, &filePath, m_context) != GP_OK)
+    {
+        return cv::Mat();
+    }
+
+    gp_file_new(&file);
+    gp_camera_file_get(m_camera, filePath.folder, filePath.name, GP_FILE_TYPE_NORMAL, file, m_context);
+
+    gp_file_get_data_and_size(file, &data, &size);
+
+    std::vector<uchar> buffer(data, data + size);
+    cv::Mat frame = cv::imdecode(buffer, cv::IMREAD_COLOR);
+
+    gp_camera_file_delete(m_camera, filePath.folder, filePath.name, m_context);
+    gp_file_free(file);
+
+    return frame;
+}
+
 

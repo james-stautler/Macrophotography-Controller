@@ -7,6 +7,10 @@ extern "C"
 }
 
 #include <string>
+#include <vector>
+#include <opencv4/opencv2/core.hpp>
+#include <opencv4/opencv2/imgproc.hpp>
+#include <opencv4/opencv2/imgcodecs.hpp>
 
 class CameraHandler
 {
@@ -27,5 +31,7 @@ public:
     bool setConfiguration(const std::string& setting, const std::string& value);
     
     bool captureImage(const std::string& fileName);
+    cv::Mat captureImage();
+
 };
 
